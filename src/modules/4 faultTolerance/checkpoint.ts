@@ -1,3 +1,4 @@
+import fs from 'fs';
 import path from 'path';
 import Database from 'better-sqlite3';
 import { Message, Checkpoint } from '../../types/types';
@@ -18,6 +19,12 @@ export class CheckpointManager {
     getCallbackMessages: () => Message[]
   ) {
     this.nodId = nodId;
+
+    if (!fs.existsSync(basePath)) {
+      fs.mkdirSync(basePath, { recursive: true });
+      logInfo(`Created directory: ${basePath}`);
+    }
+
     this.dbPath = path.join(basePath, `${nodId}-checkpoint.db`);
     this.checkpointInterval = checkpointInterval;
     this.getCallbackMessages = getCallbackMessages;
